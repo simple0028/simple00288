@@ -1,0 +1,78 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Frontlines esp", "Ocean")
+    -- MAIN
+    local Main = Window:NewTab("Main")
+    local MainSection = Main:NewSection("ESP")
+
+
+    MainSection:NewButton("Frontlines esp", "boxes and tracers", function()
+        _G.ESP = {
+    Boxes = true,
+    Tracers = true,
+    Rainbow = true,
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/mopsfl/roblox-scripts/main/.frontlines-esp.lua"))()
+end)
+
+MainSection:NewButton("Chams","see bodies", function()
+    -- apply highlight on existing entities --
+for k,v in pairs(workspace:GetChildren()) do
+    if v.Name == "soldier_model" then
+        local highlight = Instance.new("Highlight", game:GetService("CoreGui"))
+        highlight.Adornee = v
+        local render = game.RunService.RenderStepped:Connect(function()
+            highlight.Enabled = true
+            highlight.DepthMode = 0
+            highlight.OutlineColor = Color3.new(1, 0, 0)
+            highlight.OutlineTransparency = 0.5
+            highlight.FillColor = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+        end)
+        workspace.ChildRemoved:Connect(function(c)
+            if c == v then
+                render:Disconnect()
+                highlight:Destroy()
+            end
+        end)
+    end
+end
+
+-- apply highlight on new entities -- 
+workspace.ChildAdded:Connect(function(child)
+    if child.Name == "soldier_model" then
+        local highlight = Instance.new("Highlight", game:GetService("CoreGui"))
+        highlight.Adornee = child
+        local render = game.RunService.RenderStepped:Connect(function()
+            highlight.Enabled = true
+            highlight.DepthMode = 0
+            highlight.OutlineColor = Color3.new(1, 0, 0)
+            highlight.OutlineTransparency = 0.5
+            highlight.FillColor = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+        end)
+        workspace.ChildRemoved:Connect(function(c)
+            if c == child then
+                render:Disconnect()
+                highlight:Destroy()
+            end
+        end)
+    end
+end)
+end)
+
+MainSection:NewButton("Hitbox expander","easykill", function()
+    
+    local HitboxSize = Vector3.new(10,10,10) --too big wont work
+
+if getgenv().c then getgenv().c:Disconnect() end
+getgenv().c = game:GetService("RunService").RenderStepped:Connect(function()
+    for _,v in pairs(workspace:GetChildren()) do
+       if v:IsA("BasePart") and v.Color == Color3.new(1,0,0) then
+          v.Transparency = 0.5
+          v.Size = HitboxSize
+       end
+    end    
+end)
+end)
+    
+
+       
